@@ -6,6 +6,10 @@ class TestNode(unittest.TestCase):
     def test_initialization(self):
         node = Node('a', False)
         self.assertEqual(node.token, 'a')
+        self.assertEqual(node.child_tokens, set())
+        self.assertEqual(node.left, None)
+        self.assertEqual(node.center, None)
+        self.assertEqual(node.right, None)
         self.assertFalse(node.is_end_of_word)
 
         node = Node('b', True)
@@ -21,30 +25,28 @@ class TestTernarySearchTree(unittest.TestCase):
 
     def test_initialization(self):
         tree = TernarySearchTree()
-        self.assertEqual(tree.token, None)
-        self.assertEqual(tree.left, None)
-        self.assertEqual(tree.right, None)
-        self.assertEqual(tree.center, None)
 
     def test_add_one_token(self):
         tree = TernarySearchTree()
         tree.add('a')
-        self.assertEqual(tree.token, 'a')
+        node = tree.root_map['a']
+        self.assertEqual(node.token, 'a')
 
     def test_add_one_word(self):
         tree = TernarySearchTree()
         tree.add('An aapple fell off the tree')
-        self.assertEqual(tree.token, 'A')
-        self.assertEqual(tree.right.token, 'n')
-        self.assertEqual(tree.right.left.token, ' ')
-        self.assertEqual(tree.right.left.right.token, 'a')
-        self.assertEqual(tree.right.left.right.center.token, 'a')
+        node = tree.root_map['A']
+        self.assertEqual(node.token, 'A')
+        self.assertEqual(node.right.token, 'n')
+        self.assertEqual(node.right.left.token, ' ')
+        self.assertEqual(node.right.left.right.token, 'a')
+        self.assertEqual(node.right.left.right.center.token, 'a')
 
     def test_add_two_words(self):
         tree = TernarySearchTree()
         tree.add('An aapple fell off the tree')
         tree.add('An aardvark fell off the tree')
-        node = tree.right.left.right.center
+        node = tree.root_map['A'].right.left.right.center
         self.assertEqual(node.right.token, 'p')
         self.assertEqual(node.right.right.token, 'r')
         self.assertEqual(node.right.right.token, 'r')
@@ -105,6 +107,20 @@ class TestTernarySearchTree(unittest.TestCase):
         completions = tree.get_completions('An aa')
         expected = set(['An aapple fell off the tree',
                     'An aardvark fell off the tree'])
+        self.assertEqual(set(completions), expected)
+
+    def test_get_completions_words(self):
+        tree = TernarySearchTree()
+        sentences = ['An aapple fell off the tree',
+                     'An aardvark fell off the tree',
+                     'asdf',
+                     'asdf airplane asdfpppwpi, gjas',
+                    ]
+        for sentence in sentences:
+            for word in sentence.split():
+                tree.add(word)
+        completions = tree.get_completions('a')
+        expected = set(['aapple', 'aardvark'])
         self.assertEqual(set(completions), expected)
 
 

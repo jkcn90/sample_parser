@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 class Node:
 
     def __init__(self, token, is_end_of_word=False):
@@ -22,31 +24,18 @@ class Node:
 class TernarySearchTree:
 
     def __init__(self):
-        self.root = None
-
-    @property
-    def token(self):
-        return self.root.token if self.root is not None else None
-
-    @property
-    def left(self):
-        return self.root.left if self.root is not None else None
-
-    @property
-    def center(self):
-        return self.root.center if self.root is not None else None
-
-    @property
-    def right(self):
-        return self.root.right if self.root is not None else None
+        self.root_map = defaultdict(lambda: None)
 
     def add(self, tokens):
         if not tokens:
             return
-        self.root = add(tokens, self.root)
+
+        key = tokens[0]
+        self.root_map[key] = add(tokens, self.root_map[key])
 
     def search(self, tokens):
-        return search(tokens, self.root)
+        key = tokens[0]
+        return search(tokens, self.root_map[key])
 
     def contains(self, tokens):
         if not tokens:
@@ -69,7 +58,7 @@ class TernarySearchTree:
         return get_completions(tokens, node)
 
     def __repr__(self):
-        return self.root.__repr__()
+        return self.root_map.keys().__repr__()
 
 def add(tokens, node):
     token = tokens[0]
@@ -141,4 +130,4 @@ def get_completions(tokens, node, target_token=None):
             completions += get_completions(new_tokens, node.center, target_token)
     if node.is_end_of_word:
         completions += [tokens]
-    return completions
+    return list(set(completions))
