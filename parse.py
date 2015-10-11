@@ -1,10 +1,13 @@
+import os
 import sys
 import json
 from itertools import permutations
 
-from ternary_search_tree import TernarySearchTree as SearchTree
+import sample_parser
+from sample_parser.ternary_search_tree import TernarySearchTree as SearchTree
 
 data_file_path = "data/sample_conversations.json"
+data_file_path = os.path.join(sample_parser.__path__[0], data_file_path)
 with open(data_file_path) as data_file:
     data = json.load(data_file)
 

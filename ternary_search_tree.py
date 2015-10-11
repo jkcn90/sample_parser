@@ -141,7 +141,7 @@ def get_completions(tokens, node, target_token=None, starting_count=0):
         count = max(count - 1, 0)
 
         if get_new_target_tokens:
-            if isinstance(tokens, str):
+            if isinstance(tokens, str) or isinstance(tokens, unicode):
                 new_tokens = tokens + count * node.token + target_token
             else:
                 new_tokens = tokens + count * [node.token] + [target_token]
