@@ -1,5 +1,4 @@
 from collections import defaultdict
-import ipdb
 
 class Node:
 
@@ -9,7 +8,7 @@ class Node:
         self.right = None
 
         self.child_tokens_dict = defaultdict(set)
-        self.is_end_of_word_dict = {}
+        self.metadata = set()
 
     def __repr__(self):
         return 'Node({})'.format(self.token)
@@ -25,12 +24,11 @@ class TernarySearchTree:
     def __init__(self):
         self.root_map = defaultdict(lambda: None)
 
-    def add(self, tokens):
+    def add(self, tokens, metadata=None):
         if not tokens:
             return
-
         key = tokens[0]
-        self.root_map[key] = add(tokens, self.root_map[key])
+        self.root_map[key] = add(tokens, self.root_map[key], metadata)
 
     def search(self, tokens, flexible=True):
         key = tokens[0]
@@ -58,6 +56,7 @@ class TernarySearchTree:
             return []
 
         (node, count) = self.search(tokens)
+
         if node is None:
             return []
         return get_completions(tokens, node, starting_count=count-1)
@@ -65,10 +64,11 @@ class TernarySearchTree:
     def __repr__(self):
         return self.root_map.keys().__repr__()
 
-def add(tokens, node):
+def add(tokens, node, metadata=None):
     token = tokens[0]
     if node is None:
         node = Node(token)
+        node.metadata.add(metadata)
 
     if token > node.token:
         node.right = add(tokens, node.right)
@@ -80,9 +80,10 @@ def add(tokens, node):
     for i, token in enumerate(tokens):
         if token != node.token:
             node.child_tokens_dict[i].add(token)
+            node.metadata.add(metadata)
             return add(tokens[i:], node)
     node.child_tokens_dict[len(tokens)].add('')
-    node.is_end_of_word_dict[len(tokens)] = True
+    node.metadata.add(metadata)
     return node
 
 def search(tokens, node, flexible=True):
@@ -140,7 +141,10 @@ def get_completions(tokens, node, target_token=None, starting_count=0):
         count = max(count - 1, 0)
 
         if get_new_target_tokens:
-            new_tokens = tokens + count * node.token + target_token
+            if isinstance(tokens, str):
+                new_tokens = tokens + count * node.token + target_token
+            else:
+                new_tokens = tokens + count * [node.token] + [target_token]
         else:
             new_tokens = tokens
 
@@ -150,4 +154,4 @@ def get_completions(tokens, node, target_token=None, starting_count=0):
             completions += get_completions(new_tokens, node.left, target_token)
         if target_token == '':
             completions += [new_tokens]
-    return list(set(completions))
+    return completions

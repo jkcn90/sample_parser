@@ -1,4 +1,6 @@
+import sys
 import json
+from itertools import permutations
 
 from ternary_search_tree import TernarySearchTree as SearchTree
 
@@ -14,6 +16,12 @@ words = [message.split() for message in messages]
 words = [word for word_list in words for word in word_list]
 words = list(set(words))
 
-tree = SearchTree()
+word_tree = SearchTree()
 for word in words:
-    tree.add(word)
+    word_tree.add(word)
+    
+sentences = [message.split() for message in messages]
+
+sentence_tree = SearchTree()
+for sentence in sentences:
+    sentence_tree.add(sentence)
