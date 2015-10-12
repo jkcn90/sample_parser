@@ -3,7 +3,6 @@ import sys
 import json
 import numpy as np
 
-from sklearn import metrics
 from sklearn.pipeline import make_pipeline
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.preprocessing import Normalizer
@@ -28,19 +27,13 @@ words = list(set(words))
 
 vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 3),
                              stop_words='english',
-                             max_df=0.01, min_df=0.001)
+                             max_df=0.008, min_df=0.0001)
 X = vectorizer.fit_transform(messages)
 
-n_components = 500
-svd = TruncatedSVD(n_components)
-lsa = make_pipeline(svd, Normalizer(copy=False))
-
-X = lsa.fit_transform(X)
-
-n_clusters = 30
+n_clusters = 3000
 
 km = MiniBatchKMeans(n_clusters=n_clusters, init='k-means++', n_init=1,
-                             init_size=1000, batch_size=1000)
+                             init_size=10000, batch_size=5000)
 km.fit(X)
 message_predictions = km.predict(X)
 
