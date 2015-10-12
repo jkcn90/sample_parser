@@ -44,5 +44,6 @@ for word in words:
 
 sentence_tree = SearchTree()
 for message in messages:
-    truncated_message = message
+    i = min(30, len(message))
+    truncated_message = message[:i]
     sentence_tree.add(truncated_message)
