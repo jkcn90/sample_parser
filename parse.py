@@ -31,7 +31,7 @@ vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 3),
                              max_df=0.007, min_df=0.001)
 X = vectorizer.fit_transform(messages)
 
-n_clusters = 1000
+n_clusters = 500
 
 km = MiniBatchKMeans(n_clusters=n_clusters, init='k-means++', n_init=1,
                              init_size=10000, batch_size=5000)
@@ -44,6 +44,5 @@ for word in words:
 
 sentence_tree = SearchTree()
 for message in messages:
-    i = min(len(message), 20)
-    truncated_message = message[:i]
+    truncated_message = message
     sentence_tree.add(truncated_message)
