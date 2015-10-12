@@ -43,3 +43,7 @@ km = MiniBatchKMeans(n_clusters=n_clusters, init='k-means++', n_init=1,
                              init_size=1000, batch_size=1000)
 km.fit(X)
 message_predictions = km.predict(X)
+
+word_tree = SearchTree()
+for word in words:
+    word_tree.add(word)
