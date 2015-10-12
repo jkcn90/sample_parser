@@ -154,4 +154,7 @@ def get_completions(tokens, node, target_token=None, starting_count=0):
             completions += get_completions(new_tokens, node.left, target_token)
         if target_token == '':
             completions += [new_tokens]
-    return completions
+    if completions and isinstance(completions[0], list):
+        return completions
+    else:
+        return list(set(completions))
