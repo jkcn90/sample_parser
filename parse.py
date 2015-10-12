@@ -31,10 +31,10 @@ vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 3),
                              max_df=0.007, min_df=0.001)
 X = vectorizer.fit_transform(messages)
 
-n_clusters = 1500
+n_clusters = 1000
 
 km = MiniBatchKMeans(n_clusters=n_clusters, init='k-means++', n_init=1,
-                             init_size=10000, batch_size=5000)
+                             init_size=9000, batch_size=4000)
 km.fit(X)
 message_predictions = km.predict(X)
     
