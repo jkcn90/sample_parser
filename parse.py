@@ -34,7 +34,7 @@ X = vectorizer.fit_transform(messages)
 n_clusters = 1000
 
 km = MiniBatchKMeans(n_clusters=n_clusters, init='k-means++', n_init=1,
-                             init_size=9000, batch_size=4000)
+                             init_size=10000, batch_size=5000)
 km.fit(X)
 message_predictions = km.predict(X)
     
@@ -44,4 +44,6 @@ for word in words:
 
 sentence_tree = SearchTree()
 for message in messages:
-    sentence_tree.add(message)
+    i = min(len(message), 30)
+    truncated_message = message[:i]
+    sentence_tree.add(truncated_message)
