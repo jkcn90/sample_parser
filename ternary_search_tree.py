@@ -1,4 +1,5 @@
 from collections import defaultdict
+from six import string_types
 
 class Node:
 
@@ -141,7 +142,7 @@ def get_completions(tokens, node, target_token=None, starting_count=0):
         count = max(count - 1, 0)
 
         if get_new_target_tokens:
-            if isinstance(tokens, str) or isinstance(tokens, unicode):
+            if isinstance(tokens, string_types):
                 new_tokens = tokens + count * node.token + target_token
             else:
                 new_tokens = tokens + count * [node.token] + [target_token]
