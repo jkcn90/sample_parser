@@ -27,10 +27,10 @@ words = list(set(words))
 
 vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 3),
                              stop_words='english',
-                             max_df=0.008, min_df=0.001)
+                             max_df=0.008, min_df=0.0009)
 X = vectorizer.fit_transform(messages)
 
-n_clusters = 300
+n_clusters = 1000
 
 km = MiniBatchKMeans(n_clusters=n_clusters, init='k-means++', n_init=1,
                              init_size=10000, batch_size=5000)
