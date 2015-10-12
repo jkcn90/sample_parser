@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import numpy as np
+from collections import defaultdict
 
 from sklearn.pipeline import make_pipeline
 from sklearn.cluster import MiniBatchKMeans
@@ -11,7 +12,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 import sample_parser
 from sample_parser.ternary_search_tree import TernarySearchTree as SearchTree
-sys.setrecursionlimit(10000)
 
 data_file_path = "data/sample_conversations.json"
 data_file_path = os.path.join(sample_parser.__path__[0], data_file_path)
@@ -37,13 +37,16 @@ km = MiniBatchKMeans(n_clusters=n_clusters, init='k-means++', n_init=1,
                              init_size=10000, batch_size=5000)
 km.fit(X)
 message_predictions = km.predict(X)
+
+message_group = defaultdict(list)
+for key, value in zip(message_predictions, messages):
+    message_group[key] += [value]
+
     
 word_tree = SearchTree()
 for word in words:
     word_tree.add(word)
 
 sentence_tree = SearchTree()
-for message in messages:
-    i = min(30, len(message))
-    truncated_message = message[:i]
-    sentence_tree.add(truncated_message)
+for sentence in sentences:
+    sentence_tree.add(sentence)
